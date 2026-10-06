@@ -72,8 +72,8 @@ function Decor() {
       {bokeh.map(([x, y, s], i) => (
         <span key={i} className="bokeh" style={{ left: `${x}%`, top: `${y}%`, width: s, height: s, animationDelay: `${i * 0.9}s` }} />
       ))}
-      <img src={roses} alt="" width={1024} height={1024} className="absolute -left-6 -top-6 w-28 opacity-90 sm:w-48 lg:w-64" />
-      <img src={roses} alt="" width={1024} height={1024} className="absolute -bottom-6 -right-6 w-28 rotate-180 opacity-90 sm:w-48 lg:w-64" />
+      <img src={roses} alt="" width={1024} height={1024} className="absolute -left-6 -top-6 w-40 opacity-90 sm:w-52 lg:w-64" />
+      <img src={roses} alt="" width={1024} height={1024} className="absolute -bottom-6 -right-6 w-40 rotate-180 opacity-90 sm:w-52 lg:w-64" />
       <img src={roses} alt="" width={1024} height={1024} className="absolute -right-8 -top-8 hidden w-40 -scale-x-100 opacity-70 md:block lg:w-52" />
       <img src={roses} alt="" width={1024} height={1024} className="absolute -bottom-8 -left-8 hidden w-40 -scale-y-100 opacity-70 md:block lg:w-52" />
       {[["30%", 70, 0], ["70%", 50, 1.2], ["88%", 90, 0.6]].map(([l, h, d], i) => (
