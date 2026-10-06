@@ -193,7 +193,7 @@ function Final() {
   useEffect(() => {
     const el = document.getElementById("finale");
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && (grandFinale(), io.disconnect()), { threshold: 0.6 });
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && (grandFinale(), io.disconnect()), { threshold: 0.6 });
     io.observe(el);
     return () => io.disconnect();
   }, []);

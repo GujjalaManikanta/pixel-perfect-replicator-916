@@ -63,7 +63,7 @@ export function Reveal({ children, className = "" }: { children: ReactNode; clas
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && (el.classList.add("in"), io.disconnect()), { threshold: 0.2 });
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && (el.classList.add("in"), io.disconnect()), { threshold: 0.2 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
@@ -77,7 +77,7 @@ export function Typewriter({ text, speed = 35 }: { text: string; speed?: number 
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e.isIntersecting && (setStarted(true), io.disconnect()), { threshold: 0.3 });
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && (setStarted(true), io.disconnect()), { threshold: 0.3 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
