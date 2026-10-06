@@ -1,5 +1,13 @@
 // Edit everything about the surprise here: names, messages and photos.
 // To add photos: put image files in src/assets and import them, then set `mainPhoto` / `memories[].src`.
+import p1 from "@/assets/photo1.jpg.asset.json";
+import p2 from "@/assets/photo2.jpg.asset.json";
+import p3 from "@/assets/photo3.jpg.asset.json";
+import p4 from "@/assets/photo4.jpg.asset.json";
+import p5 from "@/assets/photo5.jpg.asset.json";
+import p6 from "@/assets/photo6.jpg.asset.json";
+import p7 from "@/assets/photo7.jpg.asset.json";
+import p8 from "@/assets/photo8.jpg.asset.json";
 
 export const birthday = {
   name: "Mohana",
@@ -16,7 +24,7 @@ export const birthday = {
     hint: "Tap the cake! 🕯️",
     wish: "Make a wish! 🌟 May all your dreams come true! 💕",
   },
-  mainPhoto: null as string | null,
+  mainPhoto: p1.url as string | null,
   message: {
     heading: "A Little Message For You 💌",
     text: `Happy Birthday to the most beautiful girl! ❤️
@@ -34,13 +42,24 @@ Never stop being the wonderful person you are.
 Happy Birthday Chinna! 🎂💖✨`,
   },
   memoriesHeading: "Our Beautiful Memories 💕",
+  memoriesSubtitle: "Seven little moments, countless beautiful memories. ❤️",
+  // Kept in exact upload order (photo 2 → photo 8).
   memories: [
-    { src: null as string | null, caption: "That first smile 🌸" },
-    { src: null as string | null, caption: "Endless laughs 😄" },
-    { src: null as string | null, caption: "Little adventures ✨" },
-    { src: null as string | null, caption: "Golden moments 💛" },
-    { src: null as string | null, caption: "Always together 💕" },
+    { src: p2.url, caption: "Hand In Hand, Memory By Memory 🤝❤️", bw: false },
+    { src: p3.url, caption: "One of My Favorite Moments ❤️", bw: false },
+    { src: p4.url, caption: "That Smile, That Moment ✨❤️", bw: false },
+    { src: p5.url, caption: "A Memory Close To My Heart 🛕❤️", bw: false },
+    { src: p6.url, caption: "Some Moments Need No Words... 🖤❤️", bw: true },
+    { src: p7.url, caption: "Together Is My Favorite Place To Be 💕", bw: false },
+    { src: p8.url, caption: "And Then There's You... 🌸❤️", bw: false },
   ],
+  special: {
+    title: "💖 A Special Memory 💖",
+    src: p7.url,
+    caption: "Some memories become a little more special because of the person in them. ❤️",
+  },
+  finalPhoto: p8.url,
+  footer: "Made with full of ❤️ especially for you",
   surprise: {
     button: "Click For One More Surprise 💝",
     title: "💖 A Secret For You 💖",
