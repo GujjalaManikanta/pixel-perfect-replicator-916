@@ -8,6 +8,7 @@ import p5 from "@/assets/photo5.jpg.asset.json";
 import p6 from "@/assets/photo6.jpg.asset.json";
 import p7 from "@/assets/photo7.jpg.asset.json";
 import p8 from "@/assets/photo8.jpg.asset.json";
+import finalP from "@/assets/final-photo.jpg.asset.json";
 
 export const birthday = {
   name: "Mohana",
@@ -58,7 +59,7 @@ Happy Birthday Chinna! 🎂💖✨`,
     src: p7.url,
     caption: "Some memories become a little more special because of the person in them. ❤️",
   },
-  finalPhoto: p8.url,
+  finalPhoto: finalP.url,
   footer: "Made with full of ❤️ especially for you",
   surprise: {
     button: "Click For One More Surprise 💝",

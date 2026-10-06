@@ -13,10 +13,11 @@
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
   --color-rose: var(--rose);
+  --color-heading: var(--heading);
   --color-blush: var(--blush);
   --color-muted-foreground: var(--muted-foreground);
   --color-border: var(--border);
-  --font-display: "Cormorant Garamond", Georgia, serif;
+  --font-display: "Dancing Script", "Great Vibes", cursive;
   --font-script: "Great Vibes", cursive;
   --font-sans: "Quicksand", system-ui, sans-serif;
 }
@@ -25,15 +26,21 @@
   --radius: 1rem;
   --background: oklch(0.97 0.02 350);
   --foreground: oklch(0.32 0.08 355);
-  --card: oklch(1 0 0 / 0.55);
-  --primary: oklch(0.68 0.17 358);
+  --card: oklch(0.99 0.012 350 / 0.62);
+  --primary: oklch(0.62 0.22 360);
   --primary-foreground: oklch(0.99 0.01 350);
   --rose: oklch(0.58 0.18 5);
   --blush: oklch(0.9 0.06 350);
   --muted-foreground: oklch(0.5 0.07 355);
-  --border: oklch(1 0 0 / 0.7);
-  --gradient-romance: linear-gradient(160deg, oklch(0.96 0.03 350), oklch(0.9 0.07 355) 50%, oklch(0.94 0.04 20));
-  --gradient-button: linear-gradient(135deg, oklch(0.72 0.16 355), oklch(0.62 0.19 5));
+  --border: oklch(0.88 0.06 355 / 0.8);
+  --heading: oklch(0.55 0.23 0);
+  --gradient-romance:
+    radial-gradient(circle at 15% 20%, oklch(1 0 0 / 0.7) 0, transparent 22%),
+    radial-gradient(circle at 85% 12%, oklch(0.93 0.08 40 / 0.6) 0, transparent 25%),
+    radial-gradient(circle at 80% 70%, oklch(1 0 0 / 0.55) 0, transparent 20%),
+    radial-gradient(circle at 10% 85%, oklch(0.9 0.09 30 / 0.5) 0, transparent 25%),
+    linear-gradient(170deg, oklch(0.97 0.025 350), oklch(0.92 0.06 355) 45%, oklch(0.94 0.05 25));
+  --gradient-button: linear-gradient(135deg, oklch(0.66 0.23 358), oklch(0.58 0.24 5));
   --shadow-soft: 0 20px 50px -20px oklch(0.6 0.18 358 / 0.45);
   --shadow-glow: 0 0 0 8px oklch(1 0 0 / 0.6), 0 0 60px 10px oklch(0.75 0.16 355 / 0.55);
 }
@@ -57,7 +64,7 @@ body {
 @utility btn-love {
   background: var(--gradient-button);
   color: var(--primary-foreground);
-  box-shadow: var(--shadow-soft);
+  box-shadow: var(--shadow-soft), 0 0 24px oklch(0.7 0.2 358 / 0.45);
   border-radius: 9999px;
   transition: transform 0.25s, box-shadow 0.25s;
   &:hover { transform: translateY(-2px) scale(1.03); }
@@ -89,3 +96,9 @@ body {
 
 .reveal { opacity: 0; transform: translateY(40px); transition: opacity 1s, transform 1s cubic-bezier(.2,.8,.2,1); }
 .reveal.in { opacity: 1; transform: none; }
+
+h1.font-display, h2.font-display { color: var(--heading); font-weight: 700; text-shadow: 0 2px 12px oklch(1 0 0 / 0.8); }
+.glass { box-shadow: var(--shadow-soft), 0 0 40px oklch(1 0 0 / 0.6); }
+.bokeh { position: absolute; border-radius: 9999px; filter: blur(6px); background: radial-gradient(circle, oklch(1 0 0 / 0.8), oklch(0.95 0.06 40 / 0) 70%); animation: twinkle 6s ease-in-out infinite; }
+@keyframes sway { 0%,100% { transform: rotate(-4deg);} 50% { transform: rotate(4deg);} }
+.animate-sway { animation: sway 4s ease-in-out infinite; transform-origin: top center; }

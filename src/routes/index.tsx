@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { birthday as b } from "@/content/birthday";
+import roses from "@/assets/roses-corner.png";
 import { FloatingHearts, Reveal, Typewriter, burst, grandFinale } from "@/components/birthday/effects";
 
 export const Route = createFileRoute("/")({
@@ -32,7 +33,9 @@ function Index() {
 
   return (
     <main className="relative min-h-screen overflow-x-hidden">
+      <Decor />
       <FloatingHearts />
+      <div className="relative z-10">
       {!opened ? (
         <section
           className={`relative flex min-h-screen flex-col items-center justify-center px-6 text-center transition-all duration-700 ${leaving ? "scale-110 opacity-0 blur-sm" : ""}`}
@@ -57,7 +60,29 @@ function Index() {
           <Final />
         </div>
       )}
+      </div>
     </main>
+  );
+}
+
+function Decor() {
+  const bokeh = [[8,30,90],[88,22,70],[75,55,110],[15,65,80],[50,85,100],[92,88,60]];
+  return (
+    <div aria-hidden className="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+      {bokeh.map(([x, y, s], i) => (
+        <span key={i} className="bokeh" style={{ left: `${x}%`, top: `${y}%`, width: s, height: s, animationDelay: `${i * 0.9}s` }} />
+      ))}
+      <img src={roses} alt="" width={1024} height={1024} className="absolute -left-6 -top-6 w-40 opacity-90 sm:w-52 lg:w-64" />
+      <img src={roses} alt="" width={1024} height={1024} className="absolute -bottom-6 -right-6 w-40 rotate-180 opacity-90 sm:w-52 lg:w-64" />
+      <img src={roses} alt="" width={1024} height={1024} className="absolute -right-8 -top-8 hidden w-40 -scale-x-100 opacity-70 md:block lg:w-52" />
+      <img src={roses} alt="" width={1024} height={1024} className="absolute -bottom-8 -left-8 hidden w-40 -scale-y-100 opacity-70 md:block lg:w-52" />
+      {[["30%", 70, 0], ["70%", 50, 1.2], ["88%", 90, 0.6]].map(([l, h, d], i) => (
+        <div key={i} className="animate-sway absolute top-0 hidden flex-col items-center sm:flex" style={{ left: l as string, animationDelay: `${d}s` }}>
+          <span className="w-px bg-primary/40" style={{ height: h as number }} />
+          <span className="text-xl text-heading">♥</span>
+        </div>
+      ))}
+    </div>
   );
 }
 
@@ -307,14 +332,22 @@ function Final() {
   }, []);
   return (
     <section id="finale" className="flex min-h-[80vh] flex-col items-center justify-center px-6 py-16 text-center">
-      <p className="font-script text-4xl text-rose">{b.final.lead}</p>
-      <h2 className="mt-4 font-display text-5xl font-semibold sm:text-7xl">{b.final.title}</h2>
       <Reveal>
-        <div className="glass mx-auto mt-10 w-[85%] max-w-sm rounded-3xl p-3">
-          <img src={b.finalPhoto} alt={b.name} loading="lazy" className="w-full rounded-2xl" />
+        <div className="relative mx-auto flex w-full max-w-md flex-col items-center gap-6 sm:flex-row sm:items-center">
+          <div className="relative w-[78%] max-w-[260px] shrink-0 rotate-[-3deg] rounded-md bg-[color:var(--primary-foreground)] p-3 pb-10 shadow-[var(--shadow-soft)] sm:w-[55%]">
+            <span className="absolute -left-5 -top-5 text-3xl">🌸</span>
+            <span className="absolute -right-4 -top-4 text-xl animate-twinkle">✨</span>
+            <span className="absolute -bottom-4 -left-4 text-2xl animate-pulse-heart">💕</span>
+            <span className="absolute -bottom-5 -right-4 text-3xl">🌷</span>
+            <img src={b.finalPhoto} alt={b.name} loading="lazy" className="w-full rounded-sm" />
+          </div>
+          <div className="glass rotate-[2deg] rounded-2xl px-6 py-6 text-center">
+            <p className="font-script text-3xl text-muted-foreground">{b.final.lead}</p>
+            <h2 className="mt-2 font-display text-4xl leading-tight sm:text-5xl">{b.final.title}</h2>
+            <p className="mt-4 font-script text-3xl text-rose">{b.final.sign}</p>
+          </div>
         </div>
       </Reveal>
-      <p className="mt-8 text-xl text-muted-foreground">{b.final.sign}</p>
       <footer className="mt-16 text-sm text-muted-foreground">{b.footer}</footer>
     </section>
   );
