@@ -1,5 +1,5 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { birthday as b } from "@/content/birthday";
 import { FloatingHearts, Reveal, Typewriter, burst, grandFinale } from "@/components/birthday/effects";
 
@@ -52,6 +52,7 @@ function Index() {
           <Photo />
           <Message />
           <Memories />
+          <Special />
           <Surprise />
           <Final />
         </div>
@@ -116,12 +117,18 @@ function Photo() {
   return (
     <Section>
       <Reveal>
-        <div className="photo-glow mx-auto grid size-56 place-items-center overflow-hidden rounded-full bg-blush sm:size-72">
-          {b.mainPhoto ? (
-            <img src={b.mainPhoto} alt={b.name} className="size-full object-cover" />
-          ) : (
-            <span className="animate-pulse-heart text-7xl sm:text-8xl">💖</span>
-          )}
+        <div className="relative mx-auto w-fit animate-bob">
+          <span className="absolute -top-3 -left-4 text-2xl animate-twinkle">✨</span>
+          <span className="absolute -top-2 -right-5 text-2xl animate-pulse-heart">💗</span>
+          <span className="absolute -bottom-2 -left-5 text-xl animate-pulse-heart">💕</span>
+          <span className="absolute -bottom-3 -right-3 text-2xl animate-twinkle">✨</span>
+          <div className="photo-glow grid size-60 place-items-center overflow-hidden rounded-full border-4 border-[color:var(--primary-foreground)] bg-blush sm:size-80">
+            {b.mainPhoto ? (
+              <img src={b.mainPhoto} alt={b.name} className="size-full object-cover" style={{ objectPosition: "50% 35%" }} />
+            ) : (
+              <span className="animate-pulse-heart text-7xl sm:text-8xl">💖</span>
+            )}
+          </div>
         </div>
         <p className="mt-8 font-script text-4xl text-rose">{b.name}</p>
       </Reveal>
@@ -144,27 +151,128 @@ function Message() {
 }
 
 function Memories() {
+  const [idx, setIdx] = useState(0);
+  const [viewer, setViewer] = useState<number | null>(null);
+  const track = useRef<HTMLDivElement>(null);
+  const thumbs = useRef<HTMLDivElement>(null);
+  const n = b.memories.length;
+
+  const goTo = (i: number) => {
+    const t = track.current;
+    const card = t?.children[i] as HTMLElement | undefined;
+    if (t && card) t.scrollTo({ left: card.offsetLeft - (t.clientWidth - card.clientWidth) / 2, behavior: "smooth" });
+  };
+  const onScroll = () => {
+    const t = track.current;
+    if (!t) return;
+    const center = t.scrollLeft + t.clientWidth / 2;
+    let best = 0, dist = Infinity;
+    Array.from(t.children).forEach((c, i) => {
+      const el = c as HTMLElement;
+      const d = Math.abs(el.offsetLeft + el.clientWidth / 2 - center);
+      if (d < dist) { dist = d; best = i; }
+    });
+    if (best !== idx) setIdx(best);
+  };
+  useEffect(() => {
+    const th = thumbs.current?.children[idx] as HTMLElement | undefined;
+    th?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+  }, [idx]);
+
   return (
     <section className="py-16 sm:py-24">
       <Reveal>
         <h2 className="px-5 text-center font-display text-3xl font-semibold sm:text-4xl">{b.memoriesHeading}</h2>
-        <div className="no-scrollbar mt-10 flex snap-x snap-mandatory gap-5 overflow-x-auto px-[10vw] pb-6 sm:flex-wrap sm:justify-center sm:overflow-visible sm:px-5">
-          {b.memories.map((m, i) => (
-            <figure
-              key={i}
-              className="glass w-60 shrink-0 snap-center rounded-2xl p-3 pb-4 transition-transform duration-500 hover:-translate-y-2 hover:rotate-0"
-              style={{ rotate: `${(i % 2 ? 1 : -1) * 2}deg` }}
-            >
-              <div className="grid aspect-[4/5] place-items-center overflow-hidden rounded-xl bg-blush">
-                {m.src ? <img src={m.src} alt={m.caption} className="size-full object-cover" /> : <span className="text-5xl">📸</span>}
-              </div>
-              <figcaption className="mt-3 font-script text-2xl text-rose">{m.caption}</figcaption>
-            </figure>
+        <p className="mt-3 px-5 text-center font-script text-2xl text-rose">{b.memoriesSubtitle}</p>
+        <div className="relative mx-auto mt-10 max-w-3xl">
+          <div ref={track} onScroll={onScroll} className="no-scrollbar flex snap-x snap-mandatory gap-4 overflow-x-auto px-[12%] pb-4">
+            {b.memories.map((m, i) => (
+              <figure
+                key={i}
+                className={`w-[76%] shrink-0 snap-center rounded-3xl p-3 pb-4 transition-all duration-500 sm:w-[60%] ${m.bw ? "bg-card/80 border shadow-lg" : "glass"} ${i === idx ? "scale-100 opacity-100" : "scale-95 opacity-60"}`}
+              >
+                <button onClick={() => setViewer(i)} aria-label={`Open ${m.caption}`} className={`block w-full overflow-hidden rounded-2xl ${m.bw ? "bg-foreground/90" : "bg-blush"}`}>
+                  <img src={m.src} alt={m.caption} loading="lazy" className="mx-auto h-[62vh] max-h-[520px] w-full object-contain" />
+                </button>
+                <figcaption className="mt-3 text-center font-script text-2xl text-rose">{m.caption}</figcaption>
+              </figure>
+            ))}
+          </div>
+          <button aria-label="Previous memory" onClick={() => goTo(Math.max(0, idx - 1))} className="glass absolute left-1 top-[42%] grid size-11 place-items-center rounded-full text-xl text-rose disabled:opacity-30" disabled={idx === 0}>‹</button>
+          <button aria-label="Next memory" onClick={() => goTo(Math.min(n - 1, idx + 1))} className="glass absolute right-1 top-[42%] grid size-11 place-items-center rounded-full text-xl text-rose disabled:opacity-30" disabled={idx === n - 1}>›</button>
+        </div>
+        <div className="mt-3 flex justify-center gap-2">
+          {b.memories.map((_, i) => (
+            <button key={i} aria-label={`Memory ${i + 1}`} onClick={() => goTo(i)} className={`h-2.5 rounded-full transition-all ${i === idx ? "w-6 bg-primary" : "w-2.5 bg-blush"}`} />
           ))}
         </div>
-        <p className="text-center text-sm text-muted-foreground sm:hidden">swipe →</p>
+        <div ref={thumbs} className="no-scrollbar mx-auto mt-5 flex max-w-xl gap-2 overflow-x-auto px-5 py-2 sm:justify-center">
+          {b.memories.map((m, i) => (
+            <button key={i} onClick={() => goTo(i)} aria-label={`Show memory ${i + 1}`} className={`size-14 shrink-0 overflow-hidden rounded-xl border-2 transition-all ${i === idx ? "border-primary photo-glow" : "border-transparent opacity-70"}`}>
+              <img src={m.src} alt="" loading="lazy" className="size-full object-cover" />
+            </button>
+          ))}
+        </div>
       </Reveal>
+      {viewer !== null && <Viewer index={viewer} setIndex={setViewer} />}
     </section>
+  );
+}
+
+function Viewer({ index, setIndex }: { index: number; setIndex: (i: number | null) => void }) {
+  const n = b.memories.length;
+  const m = b.memories[index]!;
+  const startX = useRef<number | null>(null);
+  const prev = () => setIndex((index - 1 + n) % n);
+  const next = () => setIndex((index + 1) % n);
+  useEffect(() => {
+    const k = (e: KeyboardEvent) => {
+      if (e.key === "Escape") setIndex(null);
+      if (e.key === "ArrowLeft") prev();
+      if (e.key === "ArrowRight") next();
+    };
+    document.addEventListener("keydown", k);
+    document.body.style.overflow = "hidden";
+    return () => { document.removeEventListener("keydown", k); document.body.style.overflow = ""; };
+  });
+  return (
+    <div
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-foreground/85 p-4 backdrop-blur-md"
+      onClick={() => setIndex(null)}
+      onTouchStart={(e) => (startX.current = e.touches[0]!.clientX)}
+      onTouchEnd={(e) => {
+        if (startX.current === null) return;
+        const dx = e.changedTouches[0]!.clientX - startX.current;
+        if (Math.abs(dx) > 40) (dx < 0 ? next : prev)();
+        startX.current = null;
+      }}
+    >
+      <button aria-label="Close" onClick={() => setIndex(null)} className="absolute right-4 top-4 grid size-11 place-items-center rounded-full bg-card text-2xl text-foreground">×</button>
+      <p className="absolute left-5 top-6 text-sm text-primary-foreground">{index + 1} / {n}</p>
+      <img key={index} src={m.src} alt={m.caption} onClick={(e) => e.stopPropagation()} className="animate-rise max-h-[78vh] max-w-full rounded-2xl object-contain" />
+      <p className="mt-4 text-center font-script text-3xl text-primary-foreground">{m.caption}</p>
+      <button aria-label="Previous" onClick={(e) => { e.stopPropagation(); prev(); }} className="absolute left-2 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-card/80 text-2xl text-rose">‹</button>
+      <button aria-label="Next" onClick={(e) => { e.stopPropagation(); next(); }} className="absolute right-2 top-1/2 grid size-11 -translate-y-1/2 place-items-center rounded-full bg-card/80 text-2xl text-rose">›</button>
+    </div>
+  );
+}
+
+function Special() {
+  return (
+    <Section>
+      <Reveal>
+        <h2 className="font-display text-3xl font-semibold sm:text-4xl">{b.special.title}</h2>
+        <div className="relative mx-auto mt-10 w-[82%] max-w-sm rotate-[-2deg] rounded-md bg-[color:var(--primary-foreground)] p-3 pb-6 shadow-[var(--shadow-soft)]">
+          <span className="absolute -left-4 -top-4 text-3xl">🌸</span>
+          <span className="absolute -right-4 -top-3 text-2xl">🌷</span>
+          <span className="absolute -bottom-4 -left-3 text-2xl animate-pulse-heart">💕</span>
+          <span className="absolute -bottom-3 -right-4 text-3xl">🌸</span>
+          <span className="absolute -right-6 top-1/3 text-lg animate-twinkle">✨</span>
+          <img src={b.special.src} alt="A special memory" loading="lazy" className="w-full rounded-sm" />
+          <p className="mt-4 font-script text-2xl leading-snug text-rose">{b.special.caption}</p>
+        </div>
+      </Reveal>
+    </Section>
   );
 }
 
@@ -193,15 +301,21 @@ function Final() {
   useEffect(() => {
     const el = document.getElementById("finale");
     if (!el) return;
-    const io = new IntersectionObserver(([e]) => e?.isIntersecting && (grandFinale(), io.disconnect()), { threshold: 0.6 });
+    const io = new IntersectionObserver(([e]) => e?.isIntersecting && (grandFinale(), io.disconnect()), { threshold: 0.4 });
     io.observe(el);
     return () => io.disconnect();
   }, []);
   return (
-    <section id="finale" className="flex min-h-[80vh] flex-col items-center justify-center px-6 text-center">
+    <section id="finale" className="flex min-h-[80vh] flex-col items-center justify-center px-6 py-16 text-center">
       <p className="font-script text-4xl text-rose">{b.final.lead}</p>
       <h2 className="mt-4 font-display text-5xl font-semibold sm:text-7xl">{b.final.title}</h2>
-      <p className="mt-6 text-xl text-muted-foreground">{b.final.sign}</p>
+      <Reveal>
+        <div className="glass mx-auto mt-10 w-[85%] max-w-sm rounded-3xl p-3">
+          <img src={b.finalPhoto} alt={b.name} loading="lazy" className="w-full rounded-2xl" />
+        </div>
+      </Reveal>
+      <p className="mt-8 text-xl text-muted-foreground">{b.final.sign}</p>
+      <footer className="mt-16 text-sm text-muted-foreground">{b.footer}</footer>
     </section>
   );
 }
